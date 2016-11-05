@@ -2,11 +2,9 @@
  * typewriter.js
  * An ES6 Port of the original typewriter.js
  *
- * Copyright 2014, Connor Atherton - http://connoratherton.com/
+ * Original Copyright 2014, Connor Atherton - http://connoratherton.com/
  * Released under the MIT Licence
  * http://opensource.org/licenses/MIT
- *
- * 
  * 
  * Github:  http://github.com/ConnorAtherton/typewriter
  */
@@ -25,7 +23,7 @@ class Typewriter {
       interval: opts.interval || 'human',
       lowerBound: opts.lowerBound || 30,
       upperBound: opts.upperBound || 200
-     };
+     }
   }
      
   randomIntFromInterval = (min, max) => {
@@ -36,7 +34,7 @@ class Typewriter {
     return !isNaN(parseFloat(number)) && isFinite(number);
   }
 
-  getIntervalSpeed = () => {
+  getIntervalSpeed() {
     if (_isNumber(options.interval)) return options.interval;
     return randomIntFromInterval(options.lowerBound, options.upperBound);
   }
