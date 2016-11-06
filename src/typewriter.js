@@ -14,7 +14,7 @@ class Typewriter {
 
   constructor(element, optin) {
     if (!element) throw new Error('A selector or element must be specified');
-    if (!opts.text) throw new Error('Typewriter needs text to type');
+    if (!optin.text) throw new Error('Typewriter needs text to type');
 
     this.options = {
       element: document.querySelector(element) || element,
