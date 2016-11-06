@@ -12,21 +12,21 @@
 
 class Typewriter {
 
-  constructor(element, opts) {
+  constructor(element, optin) {
     if (!element) throw new Error('A selector or element must be specified');
     if (!opts.text) throw new Error('Typewriter needs text to type');
 
-    var options = {
+    this.options = {
       element: document.querySelector(element) || element,
-      text: opts.text,
-      words: opts.words || false,
-      interval: opts.interval || 'human',
-      lowerBound: opts.lowerBound || 30,
-      upperBound: opts.upperBound || 200
+      text: optin.text,
+      words: optin.words || false,
+      interval: optin.interval || 'human',
+      lowerBound: optin.lowerBound || 30,
+      upperBound: optin.upperBound || 200
      }
   }
      
-  randomIntFromInterval = (min, max) => {
+  randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
@@ -35,49 +35,52 @@ class Typewriter {
   }
 
   getIntervalSpeed() {
-    if (_isNumber(options.interval)) return options.interval;
-    return randomIntFromInterval(options.lowerBound, options.upperBound);
+    if (this._isNumber(this.options.interval)) { 
+        return this.options.interval; 
+    } else {
+        return randomIntFromInterval(this.options.lowerBound, this.options.upperBound);
+    }
   }
 
-  typeByLettersConstantInterval = (cb) => {
-    let numberOfLetters = options.text.length,
+  typeByLettersConstantInterval(callback) {
+    let numberOfLetters = this.options.text.length,
         currentPosition = 0;
 
     let interval = window.setInterval(() => {
       if (currentPosition === numberOfLetters) {
         window.clearInterval(interval);
 
-        cb && cb.call(window);
+        callback && callback.call(window);
       } else {
-        options.element.innerHTML += options.text[currentPosition];
+        this.options.element.innerHTML += this.options.text[currentPosition];
         currentPosition++;
       }
-    }, getIntervalSpeed());
+    }, this.getIntervalSpeed());
   }
 
-  typeByLettersRandomisedInterval(cb) {
-    let numberOfLetters = options.text.length,
+  typeByLettersRandomisedInterval(callback) {
+    let numberOfLetters = this.options.text.length,
         currentPosition = 0;
 
-    repeat(numberOfLetters, currentPosition, cb);
+    this.repeat(numberOfLetters, currentPosition, callback);
   }
 
-  repeat(numberOfLetters, currentPosition, cb) {
-    if (numberOfLetters === 0) return cb && cb.call(window);
+  repeat(numberOfLetters, currentPosition, callback) {
+    if (numberOfLetters === 0) return callback && callback.call(window);
 
-    let interval = getIntervalSpeed.call(),
+    let interval = this.getIntervalSpeed.call(),
         timer;
 
-    options.element.innerHTML += options.text[currentPosition];
+    this.options.element.innerHTML += this.options.text[currentPosition];
 
     timer = setTimeout(() => {
       numberOfLetters--; currentPosition++;
-      repeat(numberOfLetters, currentPosition, cb);
+      this.repeat(numberOfLetters, currentPosition, callback);
     }, interval);
   }
 
-  typeByWords(cb) {
-    let words = options.text.split(' '),
+  typeByWords(callback) {
+    let words = this.options.text.split(' '),
         numberOfWords = words.length,
         currentPosition = 0;
 
@@ -85,16 +88,20 @@ class Typewriter {
       if (currentPosition === numberOfWords) {
         window.clearInterval(interval);
 
-        cb && cb.call(window);
+        callback && callback.call(window);
       } else {
-        options.element.innerHTML += (words[currentPosition] + ' ');
+        this.options.element.innerHTML += (words[currentPosition] + ' ');
         currentPosition++;
       }
-    }, getIntervalSpeed());
+    }, this.getIntervalSpeed());
   }
 
-  type(cb) {
-    options.words ? typeByWords(cb) :
-    _isNumber(options.interval) ? typeByLettersConstantInterval(cb) : typeByLettersRandomisedInterval(cb);
+  type(callback) {
+    this.options.words ? typeByWords(callback) :
+    this._isNumber(this.options.interval) ? this.typeByLettersConstantInterval(callback) : this.typeByLettersRandomisedInterval(callback);
+  }
+
+  rollBacktype(currentWord) {
+      // TODO: roll back current word
   }
 }
