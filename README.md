@@ -1,10 +1,14 @@
-Typewriter
-==========
+Typewriter-ext
+==============
 
 Typewriter provides an easy way to print out text on the web. It comes with a
 few different configuration options that are all documented below.
 
 See some examples [here](http://connoratherton.com/typewriter).
+
+Typewriter-ext also adds a few more features to the original, such as
++ removing text type writer style
++ takes a JSON file / Array to write out different words
 
 ### Letter by letter, fixed interval.
 
