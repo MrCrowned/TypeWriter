@@ -100,8 +100,4 @@ class Typewriter {
     this.options.words ? typeByWords(callback) :
     this._isNumber(this.options.interval) ? this.typeByLettersConstantInterval(callback) : this.typeByLettersRandomisedInterval(callback);
   }
-
-  rollBacktype(currentWord) {
-      // TODO: roll back current word
-  }
 }
