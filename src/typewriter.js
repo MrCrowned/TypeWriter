@@ -1,6 +1,6 @@
 /*
  * typewriter.js
- * An ES6 Port of the original typewriter.js
+ * Promise-based ES6 Port of the original typewriter.js
  *
  * Original Copyright 2014, Connor Atherton - http://connoratherton.com/
  * Released under the MIT Licence
@@ -29,11 +29,9 @@ class Typewriter {
   randomIntFromInterval(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
-
   _isNumber(number) {
     return !isNaN(parseFloat(number)) && isFinite(number);
   }
-
   getIntervalSpeed() {
     if (this._isNumber(this.options.interval)) { 
         return this.options.interval; 
@@ -42,15 +40,15 @@ class Typewriter {
     }
   }
 
-  typeByLettersConstantInterval(callback) {
+  // Type styles
+  typeByLettersConstantInterval() {
     let numberOfLetters = this.options.text.length,
         currentPosition = 0;
 
     let interval = window.setInterval(() => {
       if (currentPosition === numberOfLetters) {
         window.clearInterval(interval);
-
-        callback && callback.call(window);
+        Promise.resolve();
       } else {
         this.options.element.innerHTML += this.options.text[currentPosition];
         currentPosition++;
@@ -58,15 +56,15 @@ class Typewriter {
     }, this.getIntervalSpeed());
   }
 
-  typeByLettersRandomisedInterval(callback) {
+  typeByLettersRandomisedInterval() {
     let numberOfLetters = this.options.text.length,
         currentPosition = 0;
 
-    this.repeat(numberOfLetters, currentPosition, callback);
+    this.repeat(numberOfLetters, currentPosition);
   }
 
-  repeat(numberOfLetters, currentPosition, callback) {
-    if (numberOfLetters === 0) return callback && callback.call(window);
+  repeat(numberOfLetters, currentPosition) {
+    if (numberOfLetters === 0) { Promise.resolve(); };
 
     let interval = this.getIntervalSpeed.call(),
         timer;
@@ -75,11 +73,11 @@ class Typewriter {
 
     timer = setTimeout(() => {
       numberOfLetters--; currentPosition++;
-      this.repeat(numberOfLetters, currentPosition, callback);
+      this.repeat(numberOfLetters, currentPosition);
     }, interval);
   }
 
-  typeByWords(callback) {
+  typeByWords() {
     let words = this.options.text.split(' '),
         numberOfWords = words.length,
         currentPosition = 0;
@@ -88,7 +86,7 @@ class Typewriter {
       if (currentPosition === numberOfWords) {
         window.clearInterval(interval);
 
-        callback && callback.call(window);
+        Promise.resolve();
       } else {
         this.options.element.innerHTML += (words[currentPosition] + ' ');
         currentPosition++;
@@ -96,12 +94,15 @@ class Typewriter {
     }, this.getIntervalSpeed());
   }
 
-  type(callback) {
-    this.options.words ? typeByWords(callback) :
-    this._isNumber(this.options.interval) ? this.typeByLettersConstantInterval(callback) : this.typeByLettersRandomisedInterval(callback);
+  type() {
+    (this.options.words ? typeByWords() :
+    this._isNumber(this.options.interval) ? this.typeByLettersConstantInterval() : this.typeByLettersRandomisedInterval())
+      .then(console.log("Finished typing"))
+      .always(console.log("always always"));
   }
 
   rollBacktype(currentWord) {
-      // TODO: roll back current word
+    let startingWord = element.textContent;
+
   }
 }
